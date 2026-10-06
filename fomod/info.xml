@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fomod>
+  <Name>Daedric Ledger: Bounties of Oblivion</Name>
+  <Author>synthalorian</Author>
+  <Version>@VERSION@</Version>
+  <Website>https://github.com/synthalorian/bounties-of-oblivion</Website>
+  <Description>Radiant tasks from eight Daedric Princes, with per-prince favor, rivalries, blessings and boons. Early beta.</Description>
+  <Groups>
+    <element>Quests and Adventures</element>
+  </Groups>
+</fomod>
