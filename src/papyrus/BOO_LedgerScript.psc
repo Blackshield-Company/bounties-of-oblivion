@@ -387,7 +387,7 @@ String Function BoonText(Int aiPrince)
 	ElseIf aiPrince == 1
 		Return "Oathbreaker's Band (One-Handed +15%)"
 	ElseIf aiPrince == 2
-		Return "the Ring of the Hollow (Sneak +15%)"
+		Return "the Necklace of the Hollow (Sneak +15%)"
 	ElseIf aiPrince == 3
 		Return "the Chain of Coldharbour (Two-Handed +15%)"
 	ElseIf aiPrince == 4

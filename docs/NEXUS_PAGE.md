@@ -1,17 +1,17 @@
 # Nexus Mods page: Daedric Ledger: Bounties of Oblivion
 
-Early beta: v0.1.0 passed every automated build check but hasn't been playtested in-game. The page says so up front. Exact upload-form values are in [NEXUS_FIELDS.md](NEXUS_FIELDS.md).
+Early beta: v0.1.1 passed every automated build check but hasn't been playtested in-game. The page says so up front. Exact upload-form values are in [NEXUS_FIELDS.md](NEXUS_FIELDS.md).
 
 ## Page settings
 
 - **Game:** Skyrim Special Edition
 - **Mod name:** Daedric Ledger - Bounties of Oblivion
-- **Version:** 0.1.0 (early beta)
+- **Version:** 0.1.1 (early beta)
 - **Category:** Quests and Adventures
 - **Suggested tags:** Quests, Lore-Friendly, Daedra, Gameplay, Radiant, ESL, No SKSE, Scripted
 - **Requirements:** none.
 - **Permissions (suggested):** source on GitHub under MIT, so allow modification and conversions with credit. Don't allow re-uploads of the archive itself.
-- **File to upload:** `BountiesOfOblivion-0.1.0.zip` (FOMOD), main file, named "Bounties of Oblivion".
+- **File to upload:** `BountiesOfOblivion-0.1.1.zip` (FOMOD), main file, named "Bounties of Oblivion".
 
 ## Description (paste into the BBCode editor)
 
@@ -19,7 +19,7 @@ Early beta: v0.1.0 passed every automated build check but hasn't been playtested
 [center][size=6][b]DAEDRIC LEDGER: BOUNTIES OF OBLIVION[/b][/size]
 [size=3][i]Eight seals. One empty line. Sign it, and the Princes of Oblivion will give you work.[/i][/size]
 
-[size=3][color=#e0a030][b]EARLY BETA (v0.1.0)[/b]: this version passes every automated build check but hasn't been playtested in-game yet. Please report bugs in the Bugs tab or on GitHub, ideally with your Papyrus log.[/color][/size][/center]
+[size=3][color=#e0a030][b]EARLY BETA (v0.1.1)[/b]: this version passes every automated build check but hasn't been playtested in-game yet. Please report bugs in the Bugs tab or on GitHub, ideally with your Papyrus log.[/color][/size][/center]
 
 [line]
 
@@ -52,7 +52,7 @@ A black book appears beside you as you wake: [b]the Daedric Ledger[/b]. Sign it,
 [list]
 [*]Mehrunes Dagon: Resist Fire +15% / [i]Ember Torc of Dagon[/i] (Destruction +12%)
 [*]Boethiah: Health +20 / [i]Oathbreaker's Band[/i] (One-Handed +15%)
-[*]Namira: Resist Disease +50%, Resist Poison +15% / [i]Ring of the Hollow[/i] (Sneak +15%)
+[*]Namira: Resist Disease +50%, Resist Poison +15% / [i]Necklace of the Hollow[/i] (Sneak +15%)
 [*]Molag Bal: Resist Frost +15% / [i]Chain of Coldharbour[/i] (Two-Handed +15%)
 [*]Clavicus Vile: Carry Weight +25 / [i]Band of the Wager[/i] (Speech +15%)
 [*]Hircine: Stamina +25 / [i]Fang of the Hunt[/i] (Archery +15%)

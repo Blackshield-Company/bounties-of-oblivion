@@ -91,7 +91,7 @@ Open the Ledger, or call on it with the power it grants, and choose a seal. One 
             "Namira wants the restless dead of <Alias=ContractLocation> silenced, so that her children may feed undisturbed.",
             "Clear <Alias=ContractLocation>",
             "NAMIRA\nLady of Decay\n\n\"The draugr guard their crypts too jealously. Put them back in the ground, and let the beetles and the spiders have the tomb.\"\n\nFavor with Namira: %.0f / 100\nRival: Clavicus Vile",
-            "Blessing of Namira", "Resist Disease +50%, Resist Poison +15%.", "Ring of the Hollow"),
+            "Blessing of Namira", "Resist Disease +50%, Resist Poison +15%.", "Necklace of the Hollow"),
         new("MolagBal", "Molag Bal", "Molag Bal",
             "Daedric Ledger: Bal's Tithe",
             "Molag Bal will not share his prey. The master of <Alias=ContractLocation>, a vampire who forgot whose blood it drinks, must be destroyed.",

@@ -4,7 +4,7 @@ Game: Skyrim Special Edition
 
 Mod name: Daedric Ledger - Bounties of Oblivion
 
-Version: 0.1.0 (early beta)
+Version: 0.1.1 (early beta)
 
 Category: Quests and Adventures
 
@@ -12,9 +12,9 @@ Short summary (182 chars):
 Eight Daedric Princes post radiant tasks in a cursed ledger. Earn favor, gain blessings and enchanted gifts, and anger their rivals. Base game only, ESL-flagged, no SKSE. Early beta.
 
 Main file:
-- File: BountiesOfOblivion-0.1.0.zip (FOMOD installer)
+- File: BountiesOfOblivion-0.1.1.zip (FOMOD installer)
 - File name: Bounties of Oblivion
-- File version: 0.1.0
+- File version: 0.1.1
 - File category: Main Files
 - File description: Early beta. FOMOD installer with BountiesOfOblivion.esp (ESL-flagged), compiled scripts, and optional Papyrus sources. Requires only Skyrim Special Edition / Anniversary Edition (1.5.97 or 1.6.x).
 

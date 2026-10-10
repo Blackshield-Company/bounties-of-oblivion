@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here. Versions follow [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-10-10
+
+Still early beta, not yet playtested in game.
+
+### Changed
+- Namira's boon is now the **Necklace of the Hollow** (amulet slot, vanilla silver necklace model) instead of the Ring of the Hollow, so it no longer clashes with the vanilla Ring of Namira. Same effect (Sneak +15%), same item record, so a copy you already own just becomes a necklace. If it was equipped as a ring, unequip and re-equip it.
+
 ## [0.1.0] - 2026-10-06
 
 Early beta. First public release. It passes every automated check in the build (Papyrus compile, plugin validation, round trip, FOMOD schema) but has not been playtested in-game yet. Please report problems on the Nexus page or on GitHub.

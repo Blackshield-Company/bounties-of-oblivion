@@ -48,7 +48,7 @@ internal sealed class Builder
         new(Texts.Princes[1], new[] { (AbFortifyHealth, 20f) }, (EnchFortifyOneHandedConstantSelf, 15f),
             true, MeshRingGoldDiamond, RingGoldDiamondAA, 900),
         new(Texts.Princes[2], new[] { (AbResistDisease, 50f), (AbResistPoison, 15f) }, (EnchFortifySneakConstantSelf, 15f),
-            true, MeshRingSilverAmethyst, RingSilverAmethystAA, 700),
+            false, MeshAmuletSilver, SilverAmuletAA, 700), // 0.1.1: necklace, not a ring (vanilla already has the Ring of Namira)
         new(Texts.Princes[3], new[] { (AbResistFrost, 15f) }, (EnchFortifyTwoHandedConstantSelf, 15f),
             false, MeshAmuletSilver, SilverAmuletAA, 800),
         new(Texts.Princes[4], new[] { (AbFortifyCarryWeight, 25f) }, (EnchFortifySpeechcraftConstantSelf, 15f),
