@@ -7,7 +7,7 @@ A Skyrim Special Edition mod. The Daedric Princes have work for you. Take radian
 - Game: Skyrim Special Edition / Anniversary Edition 1.6.x (also fine on 1.5.97). Works on Windows and on Linux through Proton.
 - Requirements: none beyond the base game. No SKSE, no SkyUI, no DLC, no Creation Club content.
 - Plugin: `BountiesOfOblivion.esp`, ESL-flagged, so it doesn't use a full load-order slot. Skyrim.esm is the only master.
-- Compatible with [Blackshield Company](https://github.com/synthalorian/blackshield-company): separate records, globals and prefixes (`BOO_` vs `BSC_`), and both use the vanilla radiant system so they never send you to the same reserved location at once.
+- Compatible with [Blackshield Company](https://github.com/Blackshield-Company/blackshield-company): separate records, globals and prefixes (`BOO_` vs `BSC_`), and both use the vanilla radiant system so they never send you to the same reserved location at once.
 
 ## What it does
 
@@ -32,7 +32,7 @@ Everything reuses vanilla assets: jewelry, gem, gyro and wine-bottle meshes, van
 
 ## Install
 
-Grab `BountiesOfOblivion-<version>.zip` from [Releases](https://github.com/synthalorian/bounties-of-oblivion/releases) (it's a FOMOD installer).
+Grab `BountiesOfOblivion-<version>.zip` from [Releases](https://github.com/Blackshield-Company/bounties-of-oblivion/releases) (it's a FOMOD installer).
 
 - **Mod Organizer 2**: *Install a new mod from an archive*, pick the zip, then enable `BountiesOfOblivion.esp` in the right pane.
 - **Vortex**: drag the zip into the Mods page, install and enable it.
