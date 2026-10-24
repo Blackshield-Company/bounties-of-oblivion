@@ -93,7 +93,7 @@ As with any scripted mod, don't remove it mid-playthrough. If you must, abandon 
 More task types per prince, the other Daedric Princes, prince-specific penalties at zero favor, and an MCM.
 
 [size=4][b]Source[/b][/size]
-Open source (MIT): [url=https://github.com/synthalorian/bounties-of-oblivion]github.com/synthalorian/bounties-of-oblivion[/url]
+Open source (MIT): [url=https://github.com/Blackshield-Company/bounties-of-oblivion]github.com/Blackshield-Company/bounties-of-oblivion[/url]
 
 [size=4][b]Credits[/b][/size]
 [list]
