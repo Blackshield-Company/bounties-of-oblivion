@@ -269,7 +269,10 @@ internal sealed class Builder
             Vmad.Obj("BOO_MsgArrival", msgArrival), Vmad.Obj("BOO_MsgBindOffer", msgBind),
             Vmad.Obj("BOO_MsgBound", msgBound), Vmad.Obj("BOO_MsgRefused", msgRefused),
             Vmad.Obj("BOO_MsgLedgerMenu", msgMain), Vmad.Obj("BOO_MsgPrinceMenu", msgPrinces),
-            Vmad.Obj("BOO_MsgNoContract", msgNoContract), Vmad.Obj("BOO_MsgContractStatus", msgStatus)));
+            Vmad.Obj("BOO_MsgNoContract", msgNoContract), Vmad.Obj("BOO_MsgContractStatus", msgStatus),
+            // One real line feed. Papyrus string literals cannot hold one and the build
+            // compiler does not expand backslash escapes, so scripts take it from here.
+            Vmad.Str("LineBreak", "\n")));
 
         // --- Contract quests ------------------------------------------------------------------
         for (int i = 0; i < PrinceSpecs.Length; i++)

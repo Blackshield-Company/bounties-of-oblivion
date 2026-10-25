@@ -1,6 +1,6 @@
-# In-game test checklist (v0.1.0, early beta)
+# In-game test checklist (v0.1.3, early beta)
 
-v0.1.0 ships as an early beta. It passed every automated build check but hasn't been played in-game yet. This checklist is for players and testers who want to confirm everything works, and for the next round of fixes.
+v0.1.3 fixes line breaks in the favor, contract-satisfied and blessing boxes. Like v0.1.0, it passed every automated build check but hasn't been played in-game yet. This checklist is for players and testers who want to confirm everything works, and for the next round of fixes.
 
 Open the console with `~`. Commands that take a quest or global accept the EditorID directly. `player.additem` needs a full FormID, which depends on your load order, so look it up first:
 
@@ -88,6 +88,12 @@ For each prince: accept, check the journal (Daedric section) names a real locati
 ## 7. Persistence
 - [ ] Save during an active task, quit to desktop, reload. The task still completes.
 - [ ] Save after earning a blessing and a gift, reload. Both are kept and the gift isn't handed out again.
+
+## 8. v0.1.3 checks (not yet run in game)
+- [ ] Open the ledger, pick *Favor of the princes*: a title, then each of the 8 princes on their own line, then the closing line with a blank line before it. No `\n` or backslash text anywhere.
+- [ ] Finish any task: the contract-satisfied box shows "<Prince> is satisfied.", a blank line, then gold and each favor change on separate lines. No `\n`.
+- [ ] Earn a blessing: the blessing box has a blank line between the title line, the effect and the closing sentence.
+- [ ] If any of these show one long line, the `LineBreak` property is empty (a save that kept the pre-0.1.3 script data). The text is still readable; please report it.
 
 ## Stuck? Reset commands
 ```

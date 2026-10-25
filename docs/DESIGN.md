@@ -41,3 +41,7 @@ All location aliases use *Reserves location*, so other radiant quests (vanilla, 
 3. Accepting a task calls `Stop/Reset/Start` on the prince's quest. If the engine can't fill the aliases, the player sees "The page stays blank…".
 4. `BOO_ContractScript` polls every 4 s (kill/clear/fetch) or reacts to Revel Wine drinks. On success it calls `BOO_LedgerScript.ContractCompleted(prince)`.
 5. Payout: `floor((150 + 10 × level) × BOO_PayMult)` gold, `+BOO_FavorGain` favor, `-BOO_RivalLoss` with the rival (clamped to 0–100). Then blessings and gifts are re-evaluated for both princes.
+
+## Text
+
+Papyrus string literals never contain backslash escapes (the build compiler and the game do not expand them). Line breaks come from `BOO_LedgerScript.LineBreak`, a string property holding one real LF that the generator fills; `Br()` falls back to a space when it is empty (a pre-0.1.3 save). `check_string_escapes.py` and the plugin validator fail the build on a literal backslash escape.
