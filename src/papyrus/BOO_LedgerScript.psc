@@ -37,6 +37,14 @@ Message Property BOO_MsgPrinceMenu Auto
 Message Property BOO_MsgNoContract Auto
 Message Property BOO_MsgContractStatus Auto
 
+; A single real line-feed character (0x0A), filled by the plugin generator.
+; Papyrus string literals cannot hold one, and the build compiler does not expand
+; backslash escapes (the text would print a literal backslash and letter), so the
+; only escape-free way to break a line in a message box is to carry the character
+; in this property. Empty (an old save that predates 0.1.3): Br() falls back to a
+; plain space. Never write a backslash in a string literal; the build rejects it.
+String Property LineBreak Auto
+
 ; Prince indices: 0 Mehrunes Dagon, 1 Boethiah, 2 Namira, 3 Molag Bal,
 ; 4 Clavicus Vile, 5 Hircine, 6 Sanguine, 7 Vaermina.
 Int Property PRINCE_COUNT = 8 AutoReadOnly
@@ -48,6 +56,26 @@ Int Property AbandonPenalty = 10 AutoReadOnly
 Bool ledgerDelivered = False
 Float eligibleSince = -1.0
 Bool[] boonGiven
+
+; ---------------------------------------------------------------------------
+; Text helper
+; ---------------------------------------------------------------------------
+
+; aiCount line breaks, for Debug.MessageBox text. Falls back to one space if the
+; LineBreak property is empty, so text stays readable and never shows a backslash.
+String Function Br(Int aiCount = 1)
+	String sep = LineBreak
+	If sep == ""
+		Return " "
+	EndIf
+	String result = ""
+	Int i = 0
+	While i < aiCount
+		result += sep
+		i += 1
+	EndWhile
+	Return result
+EndFunction
 
 ; ---------------------------------------------------------------------------
 ; Delivery: the Ledger appears after the player sleeps (or after a day
@@ -270,9 +298,9 @@ Function ContractCompleted(Int aiPrince)
 	Int after = Favor[aiPrince].GetValueInt()
 	Int rivalAfter = Favor[rival].GetValueInt()
 
-	String text = PrinceName(aiPrince) + " is satisfied.\n\n"
-	text += pay + " gold.\n"
-	text += "Favor with " + PrinceName(aiPrince) + ": " + before + " -> " + after + "\n"
+	String text = PrinceName(aiPrince) + " is satisfied." + Br(2)
+	text += pay + " gold." + Br()
+	text += "Favor with " + PrinceName(aiPrince) + ": " + before + " -> " + after + Br()
 	If rivalAfter != rivalBefore
 		text += "Favor with " + PrinceName(rival) + ": " + rivalBefore + " -> " + rivalAfter
 	Else
@@ -306,7 +334,7 @@ Function ApplyTiers(Int aiPrince)
 	If value >= BLESSING_FAVOR
 		If !player.HasSpell(blessing)
 			player.AddSpell(blessing, False)
-			Debug.MessageBox(PrinceName(aiPrince) + " grants you a blessing.\n\n" + BlessingText(aiPrince) + "\n\nIt lasts while your favor stays at " + BLESSING_FAVOR + " or more.")
+			Debug.MessageBox(PrinceName(aiPrince) + " grants you a blessing." + Br(2) + BlessingText(aiPrince) + Br(2) + "It lasts while your favor stays at " + BLESSING_FAVOR + " or more.")
 		EndIf
 	ElseIf player.HasSpell(blessing)
 		player.RemoveSpell(blessing)
@@ -412,13 +440,13 @@ String Function TierName(Int aiFavor)
 EndFunction
 
 String Function StandingsText()
-	String text = "FAVOR OF THE PRINCES\n"
+	String text = "FAVOR OF THE PRINCES" + Br()
 	Int i = 0
 	While i < PRINCE_COUNT
 		Int value = Favor[i].GetValueInt()
-		text += "\n" + PrinceName(i) + ": " + value + " (" + TierName(value) + ")"
+		text += Br() + PrinceName(i) + ": " + value + " (" + TierName(value) + ")"
 		i += 1
 	EndWhile
-	text += "\n\nBlessing at " + BLESSING_FAVOR + ". Gift at " + BOON_FAVOR + ". Contracts fulfilled: " + BOO_ContractsDone.GetValueInt()
+	text += Br(2) + "Blessing at " + BLESSING_FAVOR + ". Gift at " + BOON_FAVOR + ". Contracts fulfilled: " + BOO_ContractsDone.GetValueInt()
 	Return text
 EndFunction

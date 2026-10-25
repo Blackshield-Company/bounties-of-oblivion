@@ -89,6 +89,7 @@ public static class PluginValidator
                         IScriptIntPropertyGetter => !decl.IsArray && t == "int",
                         IScriptFloatPropertyGetter => !decl.IsArray && t == "float",
                         IScriptBoolPropertyGetter => !decl.IsArray && t == "bool",
+                        IScriptStringPropertyGetter => !decl.IsArray && t == "string",
                         _ => true,
                     };
                     if (!ok) errors.Add($"{owner.EditorID}: {s.Name}.{p.Name} kind mismatch (declared {decl.Type}{(decl.IsArray ? "[]" : "")}, filled as {p.GetType().Name})");
@@ -148,6 +149,62 @@ public static class PluginValidator
             if (q.NextAliasID is uint next && aliasIds.Count > 0 && next <= aliasIds.Max())
                 errors.Add($"{q.EditorID}: NextAliasID {next} must exceed the highest alias id {aliasIds.Max()}");
         }
+
+        // Literal escape sequences. Skyrim never expands a backslash escape in record text:
+        // a stray backslash-n would print as written. Real line breaks are real LF characters.
+        var escRx = new System.Text.RegularExpressions.Regex(@"\\[nrt0]|\\""|\\\\");
+        void CheckEscapes(string? owner, string where, string? text)
+        {
+            if (!string.IsNullOrEmpty(text) && escRx.IsMatch(text))
+                errors.Add($"{owner}: {where} contains a literal backslash escape ({escRx.Match(text).Value}); use a real line break instead");
+        }
+        foreach (var m in mod.Messages)
+        {
+            CheckEscapes(m.EditorID, "message text", m.Description?.String);
+            CheckEscapes(m.EditorID, "message title", m.Name?.String);
+            foreach (var b in m.MenuButtons) CheckEscapes(m.EditorID, "message button", b.Text?.String);
+        }
+        foreach (var b in mod.Books)
+        {
+            CheckEscapes(b.EditorID, "book text", b.BookText?.String);
+            CheckEscapes(b.EditorID, "book name", b.Name?.String);
+            CheckEscapes(b.EditorID, "book description", b.Description?.String);
+        }
+        foreach (var q in mod.Quests)
+        {
+            CheckEscapes(q.EditorID, "quest name", q.Name?.String);
+            foreach (var o in q.Objectives) CheckEscapes(q.EditorID, $"objective {o.Index}", o.DisplayText?.String);
+            foreach (var st in q.Stages)
+                foreach (var le in st.LogEntries) CheckEscapes(q.EditorID, $"stage {st.Index} log", le.Entry?.String);
+        }
+        foreach (var n in mod.Npcs) CheckEscapes(n.EditorID, "NPC name", n.Name?.String);
+        foreach (var sp in mod.Spells)
+        {
+            CheckEscapes(sp.EditorID, "spell name", sp.Name?.String);
+            CheckEscapes(sp.EditorID, "spell description", sp.Description?.String);
+        }
+        foreach (var me in mod.MagicEffects)
+        {
+            CheckEscapes(me.EditorID, "effect name", me.Name?.String);
+            CheckEscapes(me.EditorID, "effect description", me.Description?.String);
+        }
+        foreach (var ar in mod.Armors)
+        {
+            CheckEscapes(ar.EditorID, "armor name", ar.Name?.String);
+            CheckEscapes(ar.EditorID, "armor description", ar.Description?.String);
+        }
+        foreach (var mi in mod.MiscItems) CheckEscapes(mi.EditorID, "item name", mi.Name?.String);
+        foreach (var ing in mod.Ingestibles)
+        {
+            CheckEscapes(ing.EditorID, "potion name", ing.Name?.String);
+            CheckEscapes(ing.EditorID, "potion description", ing.Description?.String);
+        }
+        // String script properties on any record (e.g. BOO_LedgerScript.LineBreak, one real LF).
+        foreach (var r in records)
+            if (r is IHaveVirtualMachineAdapterGetter vs && vs.VirtualMachineAdapter != null)
+                foreach (var sc in vs.VirtualMachineAdapter.Scripts)
+                    foreach (var sp in sc.Properties.OfType<IScriptStringPropertyGetter>())
+                        CheckEscapes(r.EditorID, $"{sc.Name}.{sp.Name}", sp.Data);
 
         // Round trip: parse the plugin fully, write it back out and compare bytes.
         var roundTripDir = Directory.CreateTempSubdirectory("modkit-roundtrip-").FullName;

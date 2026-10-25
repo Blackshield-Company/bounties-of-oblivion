@@ -2,7 +2,7 @@
 
 A Skyrim Special Edition mod. The Daedric Princes have work for you. Take radiant tasks from eight princes, earn favor with each one, and play them against each other.
 
-**Status: v0.1.2, early beta.** It passes every automated check in the build (Papyrus compile, plugin validation, byte-exact round trip, FOMOD schema) but has not been playtested in-game yet. Expect rough edges and please report what you find. See [docs/TESTING.md](docs/TESTING.md).
+**Status: v0.1.3, early beta.** It passes every automated check in the build (Papyrus compile, plugin validation, byte-exact round trip, FOMOD schema) but has not been playtested in-game yet. 0.1.3 fixes a literal `\n` showing in the favor, contract-satisfied and blessing boxes. Expect rough edges and please report what you find. See [docs/TESTING.md](docs/TESTING.md).
 
 - Game: Skyrim Special Edition / Anniversary Edition 1.6.x (also fine on 1.5.97). Works on Windows and on Linux through Proton.
 - Requirements: none beyond the base game. No SKSE, no SkyUI, no DLC, no Creation Club content.
