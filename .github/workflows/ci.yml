@@ -59,7 +59,7 @@ jobs:
         run: |
           ls README* >/dev/null 2>&1 || { echo "::error::README missing"; exit 1; }
           ls -d LICENSE* COPYING* 2>/dev/null | grep -q . || { echo "::error::LICENSE missing"; exit 1; }
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: "9.0.x"
       - name: Packaging dry-run
