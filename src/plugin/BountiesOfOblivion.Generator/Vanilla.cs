@@ -72,7 +72,6 @@ internal static class Vanilla
     public static readonly FormKey RingGoldSapphireAA = K(0x08E83E);
     public static readonly FormKey RingGoldEmeraldAA = K(0x08E83D);
     public static readonly FormKey RingGoldDiamondAA = K(0x08E83C);
-    public static readonly FormKey ArkayAmuletAA = K(0x0CC847);         // Skyrim.ArmorAddon.ArkayAmuletAA (Amulet of Arkay, worn)
     public static readonly FormKey EquipVoice = K(0x025BEE);
     public static readonly FormKey EquipEitherHand = K(0x013F44);
 

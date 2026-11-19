@@ -110,7 +110,7 @@ Menace and the payout box:
 The hunt:
 - [ ] `set BOO_WormMenace to 49`: the Ledger menu has no *The King of Worms* button. `set BOO_WormMenace to 50`: the button appears between *Favor of the princes* and *Close the Ledger*.
 - [ ] `set BOO_WormThreshold to 70` with menace 50: the button disappears. Set it back to 50.
-- [ ] With a prince task running, the button is hidden (only *Current task* shows).
+- [ ] With a prince task running, the button is hidden, and *Current task* replaces *Seek a task*.
 - [ ] Choose *The King of Worms*: the offer names Mannimarco, Arkay and the current menace. *Decline* returns to the menu. *Hunt the Worm Thrall* starts **Daedric Ledger: The King of Worms**. The journal names the thrall (Thrall of the King of Worms, Worm Acolyte or Hand of Mannimarco) and a dungeon, and the map marker is placed.
 - [ ] `sqv BOO_WormHunt` shows `ContractLocation`, `MapMarker` and `Target` filled. The thrall is a hostile necromancer with its name on the crosshair. Fast: `prid <Target id>`, `moveto player`, `kill`.
 - [ ] While the hunt runs, *Seek a task* is hidden and *Current task* opens the hunt box (*Close the Ledger / Abandon the hunt*).
@@ -118,7 +118,7 @@ The hunt:
 - [ ] Abandon a hunt instead: the journal shows it failed, "The King of Worms laughs from the dark." appears, menace is unchanged, and no favor is lost.
 
 Amulet:
-- [ ] `set BOO_WormSlain to 2`, `set BOO_WormMenace to 50`, finish a hunt. A second box gives the **Amulet of the Worm's Bane**. Equip it: Restoration +15% in Active Effects, Amulet of Arkay worn model, and it can't be disenchanted. (Its ground and inventory model is the plain silver necklace. Please report how it looks.)
+- [ ] `set BOO_WormSlain to 2`, `set BOO_WormMenace to 50`, finish a hunt. A second box gives the **Amulet of the Worm's Bane**. Equip it: Restoration +15% in Active Effects, the plain silver necklace when worn, and it can't be disenchanted. (Its ground and inventory model is the same silver necklace.)
 - [ ] Finish a fourth hunt: no second amulet. `show BOO_WormGiftGiven` is `1.00`.
 - [ ] Bypass: `player.additem FExxx859 1`.
 

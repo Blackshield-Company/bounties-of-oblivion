@@ -30,7 +30,7 @@ A Skyrim Special Edition mod. The Daedric Princes have work for you. Take radian
 | The King of Worms (0.2.0) | Mannimarco, the lich, is a rival and not a prince. He has no favor, blessing or gift track and never offers tasks. Every finished task raises his **menace** (0 to 100): +15, or +25 for Namira and Molag Bal, whose trade in corpses and souls draws him. |
 | The thrall hunt (0.2.0) | At 50 menace a worm-eaten page appears and the Ledger gains a *The King of Worms* button. Accept the hunt to kill his thrall (a necromancer boss near a dungeon). It counts as your one task. Slaying it pays the usual gold and resets the menace to 0. Abandoning the hunt costs no favor, and the menace stays where it is. |
 | Gnawed pages (0.2.0) | Ignore him until menace hits 100 and every prince task gives only half its favor until you hunt a thrall down. |
-| Amulet of the Worm's Bane (0.2.0) | A one-time gift for the third thrall slain: Restoration +15%, worn like the vanilla Amulet of Arkay. |
+| Amulet of the Worm's Bane (0.2.0) | A one-time gift for the third thrall slain: Restoration +15%, a vanilla silver necklace. |
 
 Namira was already one of the eight princes before 0.2.0 (clear a draugr crypt, rival of Clavicus Vile, *Blessing of Namira*, *Necklace of the Hollow*). 0.2.0 doesn't add her again. Her tasks now also draw the King of Worms.
 

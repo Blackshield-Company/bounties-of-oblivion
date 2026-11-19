@@ -526,7 +526,13 @@ EndFunction
 
 Int Function MenaceGainFor(Int aiPrince)
 	If aiPrince == 2 || aiPrince == 3
+		If BOO_WormDeathGain == None
+			Return 25
+		EndIf
 		Return BOO_WormDeathGain.GetValueInt()
+	EndIf
+	If BOO_WormGain == None
+		Return 15
 	EndIf
 	Return BOO_WormGain.GetValueInt()
 EndFunction
@@ -572,6 +578,9 @@ EndFunction
 
 ; Main menu button "The King of Worms". Returns True if the hunt was taken (closes the ledger).
 Bool Function WormMenu()
+	If BOO_WormMenace == None || WormHunt == None || BOO_MsgWormOffer == None
+		Return False
+	EndIf
 	If Menace() < WormThreshold()
 		Return False
 	EndIf
@@ -601,9 +610,14 @@ Function WormSlain()
 		player.AddItem(Gold001, pay, True)
 	EndIf
 	BOO_ContractActive.SetValueInt(0)
-	BOO_WormMenace.SetValueInt(0)
-	BOO_WormSlain.Mod(1)
-	Int slain = BOO_WormSlain.GetValueInt()
+	If BOO_WormMenace
+		BOO_WormMenace.SetValueInt(0)
+	EndIf
+	Int slain = 0
+	If BOO_WormSlain
+		BOO_WormSlain.Mod(1)
+		slain = BOO_WormSlain.GetValueInt()
+	EndIf
 
 	String text = "The thrall of the King of Worms is dead." + Br(2)
 	text += pay + " gold." + Br()
@@ -612,6 +626,9 @@ Function WormSlain()
 	text += "Arkay's priests would thank you, if they knew."
 	Debug.MessageBox(text)
 
+	If BOO_WormGiftGiven == None || BOO_WormBane == None
+		Return
+	EndIf
 	If slain >= WORM_GIFT_SLAIN && BOO_WormGiftGiven.GetValueInt() == 0
 		BOO_WormGiftGiven.SetValueInt(1)
 		player.AddItem(BOO_WormBane, 1, True)

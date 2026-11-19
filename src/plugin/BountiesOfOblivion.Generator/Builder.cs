@@ -185,8 +185,7 @@ internal sealed class Builder
             Name = Texts.WormBaneName,
             ObjectBounds = Bounds(-3, -9, 0, 3, 9, 1),
             ObjectEffect = L<IObjectEffectGetter>(enchWormBane.FormKey).AsNullable(),
-            // Worn: the vanilla Amulet of Arkay addon. Ground/inventory: the verified silver necklace
-            // path (the Arkay ground mesh path has not been checked against vanilla data yet).
+            // Worn and ground/inventory: the vanilla silver necklace, so both models match.
             WorldModel = new GenderedItem<ArmorModel?>(new ArmorModel { Model = new Model { File = MeshAmuletSilver } }, null),
             BodyTemplate = new BodyTemplate
             {
@@ -201,7 +200,7 @@ internal sealed class Builder
                 L<IKeywordGetter>(ClothingNecklace), L<IKeywordGetter>(MagicDisallowEnchanting),
             },
             Description = "",
-            Armature = { L<IArmorAddonGetter>(ArkayAmuletAA) },
+            Armature = { L<IArmorAddonGetter>(SilverAmuletAA) },
             Value = 800,
             Weight = 0.25f,
         });
@@ -278,6 +277,8 @@ internal sealed class Builder
         }.Select(t => Add(TemplatedNpc(t.edid, t.name, t.shortName, t.template, t.race, allButName))).ToList();
         var lvlQuarry = Add(LeveledList("BOO_LCharQuarry", quarry));
 
+        // The template flags in allButName override race, class and combat style (Traits/AIData),
+        // as with the champions' NordRace; they are kept as fallbacks only.
         var thralls = new (string edid, string name, string shortName)[]
         {
             ("BOO_WormThrall01", "Thrall of the King of Worms", "Thrall"),

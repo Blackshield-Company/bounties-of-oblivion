@@ -21,7 +21,7 @@
 | `BOO_WormHunt` (857) | Quest, type Daedric | The King of Worms' thrall hunt. Runs `BOO_ContractScript` with `Prince = 8` and `ContractType = 0` (kill). Same alias layout as the contracts. It is *not* in the `Contracts` array: the Ledger holds it in the `WormHunt` property. |
 | `BOO_WormMenace` (851), `BOO_WormSlain` (852), `BOO_WormGiftGiven` (853) | Globals | King of Worms state: menace 0 to 100, thralls slain, amulet given (0/1). |
 | `BOO_WormGain` (854, 15), `BOO_WormDeathGain` (855, 25), `BOO_WormThreshold` (856, 50) | Globals | Tunables. |
-| `BOO_WormBane` (859) + `BOO_EnchWormBane` (858) | Armor (amulet) + enchantment | *Amulet of the Worm's Bane*: vanilla `ArkayAmuletAA` worn model, silver necklace ground model, vanilla `EnchFortifyRestorationConstantSelf` at 15, `MagicDisallowEnchanting`. |
+| `BOO_WormBane` (859) + `BOO_EnchWormBane` (858) | Armor (amulet) + enchantment | *Amulet of the Worm's Bane*: vanilla `SilverAmuletAA` worn model and matching silver necklace ground model, vanilla `EnchFortifyRestorationConstantSelf` at 15, `MagicDisallowEnchanting`. |
 | `BOO_WormThrall01..03` (85A-85C) + `BOO_LCharWormThrall` (85D) | NPCs templated on `LCharWarlockBossNecro` (everything but name) | Thrall of the King of Worms, Worm Acolyte, Hand of Mannimarco. |
 | `BOO_MsgWormOffer` (85E), `BOO_MsgWormStatus` (85F) | Messages | The hunt offer (shows the menace) and the active-hunt status box (abandon without penalty). |
 
