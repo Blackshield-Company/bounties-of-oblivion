@@ -5,6 +5,7 @@ ContractType 0 = kill a target, 1 = clear a location (or kill its boss),
 
 BOO_LedgerScript Property Ledger Auto
 Int Property Prince Auto
+{0-7: a prince. 8 (BOO_LedgerScript.WORM): the King of Worms' thrall hunt, a kill task.}
 Int Property ContractType Auto
 LocationAlias Property ContractLocation Auto
 ReferenceAlias Property MapMarker Auto
