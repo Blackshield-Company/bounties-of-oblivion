@@ -2,7 +2,7 @@
 
 A Skyrim Special Edition mod. The Daedric Princes have work for you. Take radiant tasks from eight princes, earn favor with each one, and play them against each other.
 
-**Status: v0.1.3, early beta.** It passes every automated check in the build (Papyrus compile, plugin validation, byte-exact round trip, FOMOD schema) but has not been playtested in-game yet. 0.1.3 fixes a literal `\n` showing in the favor, contract-satisfied and blessing boxes. Expect rough edges and please report what you find. See [docs/TESTING.md](docs/TESTING.md).
+**Status: v0.2.0, local review build (unreleased).** It passes every automated check in the build (Papyrus compile, plugin validation, byte-exact round trip, FOMOD schema) but has not been playtested in-game yet. 0.2.0 adds the King of Worms, a rival who is not a prince (see below). The latest published release is 0.1.3. Expect rough edges and please report what you find. See [docs/TESTING.md](docs/TESTING.md).
 
 - Game: Skyrim Special Edition / Anniversary Edition 1.6.x (also fine on 1.5.97). Works on Windows and on Linux through Proton.
 - Requirements: none beyond the base game. No SKSE, no SkyUI, no DLC, no Creation Club content.
@@ -27,8 +27,14 @@ A Skyrim Special Edition mod. The Daedric Princes have work for you. Take radian
 | Rivalries | Dagon/Boethiah, Namira/Clavicus Vile, Molag Bal/Hircine, Sanguine/Vaermina. Each task costs 10 favor with the rival. |
 | Blessings | At 30 favor a prince grants an ability (for example *Blessing of Boethiah*: Health +20). It's removed if favor falls below 30. |
 | Gifts | At 80 favor a prince sends one enchanted ring or amulet (for example *Ember Torc of Dagon*: Destruction +12%). Once per prince. |
+| The King of Worms (0.2.0) | Mannimarco, the lich, is a rival and not a prince. He has no favor, blessing or gift track and never offers tasks. Every finished task raises his **menace** (0 to 100): +15, or +25 for Namira and Molag Bal, whose trade in corpses and souls draws him. |
+| The thrall hunt (0.2.0) | At 50 menace a worm-eaten page appears and the Ledger gains a *The King of Worms* button. Accept the hunt to kill his thrall (a necromancer boss near a dungeon). It counts as your one task. Slaying it pays the usual gold and resets the menace to 0. Abandoning the hunt costs no favor, and the menace stays where it is. |
+| Gnawed pages (0.2.0) | Ignore him until menace hits 100 and every prince task gives only half its favor until you hunt a thrall down. |
+| Amulet of the Worm's Bane (0.2.0) | A one-time gift for the third thrall slain: Restoration +15%, worn like the vanilla Amulet of Arkay. |
 
-Everything reuses vanilla assets: jewelry, gem, gyro and wine-bottle meshes, vanilla magic effects, and leveled bandit, bear and sabre cat templates. There is no new voice acting. The princes speak through the Ledger and message boxes.
+Namira was already one of the eight princes before 0.2.0 (clear a draugr crypt, rival of Clavicus Vile, *Blessing of Namira*, *Necklace of the Hollow*). 0.2.0 doesn't add her again. Her tasks now also draw the King of Worms.
+
+Everything reuses vanilla assets: jewelry, gem, gyro and wine-bottle meshes, vanilla magic effects, and leveled bandit, bear, sabre cat and necromancer templates. There is no new voice acting. The princes speak through the Ledger and message boxes.
 
 ## Install
 
@@ -48,6 +54,9 @@ set BOO_IntroMinLevel to 5    (level before the Ledger can arrive)
 set BOO_PayMult to 1.0        (multiplier on task gold)
 set BOO_FavorGain to 20       (favor per completed task)
 set BOO_RivalLoss to 10       (favor the rival loses per task)
+set BOO_WormGain to 15        (King of Worms menace per task)
+set BOO_WormDeathGain to 25   (menace per Namira or Molag Bal task instead)
+set BOO_WormThreshold to 50   (menace at which he sends a thrall)
 ```
 
 ## Build from source
