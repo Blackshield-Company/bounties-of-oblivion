@@ -23,6 +23,11 @@ internal static class Vanilla
     public static readonly FormKey LCharBanditBoss = K(0x03DF16);
     public static readonly FormKey LCharBearAll = K(0x042266);
     public static readonly FormKey LCharSabrecat = K(0x0FE2D5);
+    // King of Worms thralls (0.2.0)
+    public static readonly FormKey BretonRace = K(0x013741);            // Skyrim.Race.BretonRace
+    public static readonly FormKey ClassMageNecro = K(0x0C969F);        // Skyrim.Class.CombatMageNecro
+    public static readonly FormKey CsHumanMagic = K(0x03BE1C);          // Skyrim.CombatStyle.csHumanMagic
+    public static readonly FormKey LCharWarlockBossNecro = K(0x0E104F); // Skyrim.LeveledNpc.LCharWarlockBossNecro
 
     // Quests
     public static readonly FormKey MQ101 = K(0x03372B);
@@ -67,6 +72,7 @@ internal static class Vanilla
     public static readonly FormKey RingGoldSapphireAA = K(0x08E83E);
     public static readonly FormKey RingGoldEmeraldAA = K(0x08E83D);
     public static readonly FormKey RingGoldDiamondAA = K(0x08E83C);
+    public static readonly FormKey ArkayAmuletAA = K(0x0CC847);         // Skyrim.ArmorAddon.ArkayAmuletAA (Amulet of Arkay, worn)
     public static readonly FormKey EquipVoice = K(0x025BEE);
     public static readonly FormKey EquipEitherHand = K(0x013F44);
 
@@ -97,6 +103,7 @@ internal static class Vanilla
     public static readonly FormKey EnchFortifyArcheryConstantSelf = K(0x07A0FE);
     public static readonly FormKey EnchFortifyHealRateConstantSelf = K(0x07A0F8);
     public static readonly FormKey EnchFortifyIllusionConstantSelf = K(0x07A0FA);
+    public static readonly FormKey EnchFortifyRestorationConstantSelf = K(0x07A101); // Skyrim.MagicEffect.EnchFortifyRestorationConstantSelf
     // ... and the revel wine
     public static readonly FormKey AlchRestoreHealth = K(0x03EB15);
 
