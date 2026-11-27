@@ -632,7 +632,7 @@ Function WormSlain()
 	If slain >= WORM_GIFT_SLAIN && BOO_WormGiftGiven.GetValueInt() == 0
 		BOO_WormGiftGiven.SetValueInt(1)
 		player.AddItem(BOO_WormBane, 1, True)
-		Debug.MessageBox("Three of his thralls lie dead. Where the last one fell, among the worms, lies an amulet of Arkay that was not there before." + Br(2) + "You receive the Amulet of the Worm's Bane (Restoration +15%).")
+		Debug.MessageBox("Three of his thralls lie dead. Where the last one fell, among the worms, lies a silver necklace that was not there before." + Br(2) + "You receive the Amulet of the Worm's Bane (Restoration +15%).")
 	EndIf
 EndFunction
 

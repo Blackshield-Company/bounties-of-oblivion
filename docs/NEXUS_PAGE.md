@@ -1,17 +1,17 @@
 # Nexus Mods page: Daedric Ledger: Bounties of Oblivion
 
-Early beta: v0.1.3 fixes a literal `\n` showing in the favor, contract-satisfied and blessing boxes. It passed every automated build check but hasn't been playtested in-game. The page says so up front. Exact upload-form values are in [NEXUS_FIELDS.md](NEXUS_FIELDS.md).
+Early beta: v0.2.0 adds the King of Worms, a rival who is not a prince. It passed every automated build check but hasn't been playtested in-game. The page says so up front. Exact upload-form values are in [NEXUS_FIELDS.md](NEXUS_FIELDS.md).
 
 ## Page settings
 
 - **Game:** Skyrim Special Edition
 - **Mod name:** Daedric Ledger - Bounties of Oblivion
-- **Version:** 0.1.3 (early beta)
+- **Version:** 0.2.0 (early beta)
 - **Category:** Quests and Adventures
 - **Suggested tags:** Quests, Lore-Friendly, Daedra, Gameplay, Radiant, ESL, No SKSE, Scripted
 - **Requirements:** none.
 - **Permissions (suggested):** source on GitHub under MIT, so allow modification and conversions with credit. Don't allow re-uploads of the archive itself.
-- **File to upload:** `BountiesOfOblivion-0.1.3.zip` (FOMOD), main file, named "Bounties of Oblivion".
+- **File to upload:** `BountiesOfOblivion-0.2.0.zip` (FOMOD), main file, named "Bounties of Oblivion".
 
 ## Description (paste into the BBCode editor)
 
@@ -19,7 +19,7 @@ Early beta: v0.1.3 fixes a literal `\n` showing in the favor, contract-satisfied
 [center][size=6][b]DAEDRIC LEDGER: BOUNTIES OF OBLIVION[/b][/size]
 [size=3][i]Eight seals. One empty line. Sign it, and the Princes of Oblivion will give you work.[/i][/size]
 
-[size=3][color=#e0a030][b]EARLY BETA (v0.1.3)[/b]: this version passes every automated build check but hasn't been playtested in-game yet. Please report bugs in the Bugs tab or on GitHub, ideally with your Papyrus log.[/color][/size][/center]
+[size=3][color=#e0a030][b]EARLY BETA (v0.2.0)[/b]: this version passes every automated build check but hasn't been playtested in-game yet. Please report bugs in the Bugs tab or on GitHub, ideally with your Papyrus log.[/color][/size][/center]
 
 [line]
 
@@ -45,6 +45,7 @@ A black book appears beside you as you wake: [b]the Daedric Ledger[/b]. Sign it,
 [*][b]Rivalries[/b]: Dagon and Boethiah, Namira and Clavicus Vile, Molag Bal and Hircine, Sanguine and Vaermina. Every task costs 10 favor with the rival.
 [*][b]Blessings at 30 favor[/b]: one ability per prince, lost if favor drops below 30.
 [*][b]Gifts at 80 favor[/b]: an enchanted ring or amulet from each prince.
+[*][b]The King of Worms[/b] (0.2.0): Mannimarco is a rival, not a prince. Every task raises his menace, Namira's and Molag Bal's most of all. At 50 he sends a thrall, and the Ledger lets you hunt it down. Ignore him until 100 and every prince task gives half its favor. Slay three thralls for the [i]Amulet of the Worm's Bane[/i] (Restoration +15%).
 [*]All vanilla assets. No new meshes or textures, so retextures apply.
 [/list]
 
