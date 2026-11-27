@@ -61,6 +61,14 @@ Mannimarco is an antagonist, not a prince. He has no entry in the 8-long `Favor`
 
 Save compatibility: everything new lives in new globals and new script properties, filled from the plugin. Nothing relies on `OnInit`, which doesn't run again on an existing save. `Menace()`, `WormThreshold()`, `AddMenace()`, `ActiveContract()` and the standings section check for unfilled properties.
 
+## Faith mods (0.2.0)
+
+`BOO_LedgerScript.WorshipSource(prince)` runs once per finished prince task. It returns "Wintersun", "Pilgrim" or "". A match adds `BOO_FaithBonus` (GLOB 860, default 10) to the favor gain, after the King of Worms halving.
+
+- **Wintersun** (`Wintersun - Faiths of Skyrim.esp`): `Game.GetFormFromFile(0x005901)` finds its tracker quest, and `BOO_WintersunBridge.WorshipID()` reads `worshipID` from the quest's `wsn_trackerquest_quest` script. The bridge is a separate global-only script, so `BOO_LedgerScript` never names Wintersun's type. `src/papyrus-headers/wsn_trackerquest_quest.psc` is a compile-time declaration only, and it isn't packaged. worshipID per prince: Dagon 11, Boethiah 14, Namira 30, Molag Bal 16, Clavicus Vile 29, Hircine 25, Sanguine 20, Vaermina 12. Wintersun's sources aren't public. The quest FormID, property name and worshipID table come from an open-source Wintersun integration (Oldcustard/Wintersun-Skyrimnet-Integration), not from the plugin itself.
+- **Pilgrim** (`Pilgrim.esp`): praying at a Daedric shrine casts `MAG_Altar<Prince>`, which carries `MAG_Altar<Prince>CultistEffect` ("Cultist of <Prince>"). `Actor.HasMagicEffect` checks for it. FormIDs were read from Pilgrim.esp in the author's public repository (TateTaylorOH/Pilgrim): Dagon 367D09, Boethiah 371F2D, Namira 38125B, Molag Bal 35DAE5, Clavicus Vile 37704B, Hircine 371F39, Sanguine 38639A, Vaermina 36CE24.
+- Without either mod, `GetFormFromFile` returns None and the Papyrus log gets one "file not loaded" line per finished task. Nothing else happens.
+
 ## Text
 
 Papyrus string literals never contain backslash escapes (the build compiler and the game do not expand them). Line breaks come from `BOO_LedgerScript.LineBreak`, a string property holding one real LF that the generator fills; `Br()` falls back to a space when it is empty (a pre-0.1.3 save). `check_string_escapes.py` and the plugin validator fail the build on a literal backslash escape.

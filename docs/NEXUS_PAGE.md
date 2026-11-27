@@ -46,6 +46,7 @@ A black book appears beside you as you wake: [b]the Daedric Ledger[/b]. Sign it,
 [*][b]Blessings at 30 favor[/b]: one ability per prince, lost if favor drops below 30.
 [*][b]Gifts at 80 favor[/b]: an enchanted ring or amulet from each prince.
 [*][b]The King of Worms[/b] (0.2.0): Mannimarco is a rival, not a prince. Every task raises his menace, Namira's and Molag Bal's most of all. At 50 he sends a thrall, and the Ledger lets you hunt it down. Ignore him until 100 and every prince task gives half its favor. Slay three thralls for the [i]Amulet of the Worm's Bane[/i] (Restoration +15%).
+[*][b]Wintersun and Pilgrim[/b] (0.2.0, optional): follow a prince in Wintersun, or carry their shrine blessing from Pilgrim, and their tasks give +10 favor. No patch to install, no new masters.
 [*]All vanilla assets. No new meshes or textures, so retextures apply.
 [/list]
 

@@ -31,6 +31,12 @@ rm -rf "$STAGE"
 mkdir -p "$STAGE/00 Core/Scripts" "$STAGE/10 Papyrus Sources/Source/Scripts" "$DIST_DIR"
 
 echo "== Papyrus"
+# Headers: the kit's vanilla stubs unless -H names other ones, plus src/papyrus-headers
+# (compile-time declarations for optional mods; never shipped).
+has_headers=0
+for a in "${PAPYRUS_ARGS[@]}"; do [[ "$a" == "-H" ]] && has_headers=1; done
+[[ $has_headers -eq 1 ]] || PAPYRUS_ARGS+=(-H "$KIT/papyrus-stubs")
+PAPYRUS_ARGS+=(-H src/papyrus-headers)
 "$KIT/papyrus/build-papyrus.sh" -i src/papyrus -o "$STAGE/00 Core/Scripts" "${PAPYRUS_ARGS[@]}"
 cp src/papyrus/*.psc "$STAGE/10 Papyrus Sources/Source/Scripts/"
 

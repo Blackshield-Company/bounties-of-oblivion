@@ -18,3 +18,4 @@ Int Function GetRelationshipRank(Actor akOther) native
 Function SetPlayerTeammate(Bool abTeammate = True, Bool abCanDoFavor = True) native
 Event OnDeath(Actor akKiller)
 EndEvent
+Bool Function HasMagicEffect(MagicEffect akEffect) native
