@@ -7,6 +7,7 @@ A Skyrim Special Edition mod. The Daedric Princes have work for you. Take radian
 - Game: Skyrim Special Edition / Anniversary Edition 1.6.x (also fine on 1.5.97). Works on Windows and on Linux through Proton.
 - Requirements: none beyond the base game. No SKSE, no SkyUI, no DLC, no Creation Club content.
 - Plugin: `BountiesOfOblivion.esp`, ESL-flagged, so it doesn't use a full load-order slot. Skyrim.esm is the only master.
+- Optional faith mods: if you follow a prince in [Wintersun - Faiths of Skyrim](https://www.nexusmods.com/skyrimspecialedition/mods/22506) or carry their shrine blessing from [Pilgrim - A Religion Overhaul](https://www.nexusmods.com/skyrimspecialedition/mods/54099), that prince's tasks give +10 favor (0.2.0). Neither is required or a master. See [Faith mods](#faith-mods-wintersun-and-pilgrim).
 - Compatible with [Blackshield Company](https://github.com/Blackshield-Company/blackshield-company): separate records, globals and prefixes (`BOO_` vs `BSC_`), and both use the vanilla radiant system so they never send you to the same reserved location at once.
 
 ## What it does
@@ -36,6 +37,17 @@ Namira was already one of the eight princes before 0.2.0 (clear a draugr crypt, 
 
 Everything reuses vanilla assets: jewelry, gem, gyro and wine-bottle meshes, vanilla magic effects, and leveled bandit, bear, sabre cat and necromancer templates. There is no new voice acting. The princes speak through the Ledger and message boxes.
 
+## Faith mods: Wintersun and Pilgrim
+
+Since 0.2.0 the Ledger notices worship from two religion mods. Both are optional soft integrations: the plugin keeps Skyrim.esm as its only master, nothing is patched in either mod, and without them nothing changes.
+
+| Mod | What counts as worship | Effect |
+|---|---|---|
+| Wintersun - Faiths of Skyrim | You follow the prince (Follower or Devotee) | +`BOO_FaithBonus` (10) favor on each of that prince's tasks |
+| Pilgrim - A Religion Overhaul | You carry the prince's shrine blessing (*Cultist of ...*) | Same |
+
+Rivals still take their usual cut, and the King of Worms' half-favor penalty is applied before the bonus. What it does not do: it doesn't raise or lower your Wintersun favor or follow tenets, it doesn't change Pilgrim's blessings, and worshipping Mannimarco in either mod doesn't affect the King of Worms. Doing those would need a hard master or SKSE.
+
 ## Install
 
 Grab `BountiesOfOblivion-<version>.zip` from [Releases](https://github.com/Blackshield-Company/bounties-of-oblivion/releases) (it's a FOMOD installer).
@@ -57,6 +69,7 @@ set BOO_RivalLoss to 10       (favor the rival loses per task)
 set BOO_WormGain to 15        (King of Worms menace per task)
 set BOO_WormDeathGain to 25   (menace per Namira or Molag Bal task instead)
 set BOO_WormThreshold to 50   (menace at which he sends a thrall)
+set BOO_FaithBonus to 10      (extra favor when you worship the prince; 0 turns it off)
 ```
 
 ## Build from source
@@ -82,6 +95,7 @@ Requirements: .NET SDK 9 or newer, python3, curl, and optionally `xmllint` (libx
 
 ```
 src/papyrus/                 Papyrus sources (.psc)
+src/papyrus-headers/         Compile-time declarations for optional mods (not shipped)
 src/plugin/                  Mutagen plugin generator + pinned FormIDs
 fomod/                       FOMOD installer config (info.xml, ModuleConfig.xml)
 docs/                        Testing checklist, design notes, Nexus page and upload fields

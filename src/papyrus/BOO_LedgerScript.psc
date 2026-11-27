@@ -55,6 +55,10 @@ Armor Property BOO_WormBane Auto
 Message Property BOO_MsgWormOffer Auto
 Message Property BOO_MsgWormStatus Auto
 
+; 0.2.0: soft integration with Wintersun and Pilgrim (no masters, no SKSE).
+; Extra favor on a finished task when the player worships that prince.
+GlobalVariable Property BOO_FaithBonus Auto
+
 ; A single real line-feed character (0x0A), filled by the plugin generator.
 ; Papyrus string literals cannot hold one, and the build compiler does not expand
 ; backslash escapes (the text would print a literal backslash and letter), so the
@@ -329,6 +333,13 @@ Function ContractCompleted(Int aiPrince)
 	If gnawed
 		gain = gain / 2
 	EndIf
+	; Wintersun follower or Pilgrim shrine blessing of this prince: extra favor.
+	String faith = WorshipSource(aiPrince)
+	Int faithGain = 0
+	If faith != ""
+		faithGain = FaithBonus()
+		gain += faithGain
+	EndIf
 	Int loss = BOO_RivalLoss.GetValueInt()
 	Int rival = RivalOf(aiPrince)
 
@@ -355,6 +366,9 @@ Function ContractCompleted(Int aiPrince)
 	EndIf
 	If gnawed
 		text += Br(2) + "The King of Worms gnawed the page. Favor gained is halved."
+	EndIf
+	If faithGain > 0
+		text += Br(2) + "Your worship pleases " + PrinceName(aiPrince) + " (" + faith + "): +" + faithGain + " favor."
 	EndIf
 
 	; Every task feeds the King of Worms; Namira's and Molag Bal's trade in the dead feeds him more.
@@ -650,4 +664,91 @@ String Function StandingsText()
 		text += Br(2) + "The King of Worms: menace " + menace + "/" + MAX_MENACE + " (" + WormTierName(menace) + "). Thralls slain: " + BOO_WormSlain.GetValueInt() + "."
 	EndIf
 	Return text
+EndFunction
+
+; ---------------------------------------------------------------------------
+; Wintersun and Pilgrim (0.2.0, optional, no masters)
+; ---------------------------------------------------------------------------
+; Both are looked up at runtime with Game.GetFormFromFile, so neither is a
+; master and nothing changes when they are not installed.
+;
+; Wintersun - Faiths of Skyrim.esp: the tracker quest (0x005901) runs the
+; script wsn_trackerquest_quest, whose worshipID property is the deity the
+; player follows (-1 for none). Read through BOO_WintersunBridge so this script
+; never needs Wintersun's script type.
+;
+; Pilgrim.esp: praying at a Daedric shrine casts "Blessing of <Prince>", which
+; carries the magic effect "Cultist of <Prince>" (MAG_Altar<Prince>CultistEffect).
+
+Int Function FaithBonus()
+	If BOO_FaithBonus == None
+		Return 10
+	EndIf
+	Return BOO_FaithBonus.GetValueInt()
+EndFunction
+
+; "Wintersun", "Pilgrim" or "" for no worship of this prince.
+String Function WorshipSource(Int aiPrince)
+	If FaithBonus() <= 0
+		Return ""
+	EndIf
+	Int wsn = WintersunDeityFor(aiPrince)
+	If wsn >= 0
+		Quest tracker = Game.GetFormFromFile(0x005901, "Wintersun - Faiths of Skyrim.esp") as Quest
+		If tracker && BOO_WintersunBridge.WorshipID(tracker) == wsn
+			Return "Wintersun"
+		EndIf
+	EndIf
+	Int pil = PilgrimCultistEffectFor(aiPrince)
+	If pil > 0
+		MagicEffect cultist = Game.GetFormFromFile(pil, "Pilgrim.esp") as MagicEffect
+		If cultist && Game.GetPlayer().HasMagicEffect(cultist)
+			Return "Pilgrim"
+		EndIf
+	EndIf
+	Return ""
+EndFunction
+
+; Wintersun worshipID for each prince.
+Int Function WintersunDeityFor(Int aiPrince)
+	If aiPrince == 0
+		Return 11 ; Mehrunes Dagon
+	ElseIf aiPrince == 1
+		Return 14 ; Boethiah
+	ElseIf aiPrince == 2
+		Return 30 ; Namira
+	ElseIf aiPrince == 3
+		Return 16 ; Molag Bal
+	ElseIf aiPrince == 4
+		Return 29 ; Clavicus Vile
+	ElseIf aiPrince == 5
+		Return 25 ; Hircine
+	ElseIf aiPrince == 6
+		Return 20 ; Sanguine
+	ElseIf aiPrince == 7
+		Return 12 ; Vaermina
+	EndIf
+	Return -1
+EndFunction
+
+; Pilgrim.esp MAG_Altar<Prince>CultistEffect for each prince.
+Int Function PilgrimCultistEffectFor(Int aiPrince)
+	If aiPrince == 0
+		Return 0x367D09 ; MAG_AltarMehrunesDagonCultistEffect
+	ElseIf aiPrince == 1
+		Return 0x371F2D ; MAG_AltarBoethiahCultistEffect
+	ElseIf aiPrince == 2
+		Return 0x38125B ; MAG_AltarNamiraCultistEffect
+	ElseIf aiPrince == 3
+		Return 0x35DAE5 ; MAG_AltarMolagBalCultistEffect
+	ElseIf aiPrince == 4
+		Return 0x37704B ; MAG_AltarClavicusVileCultistEffect
+	ElseIf aiPrince == 5
+		Return 0x371F39 ; MAG_AltarHircineCultistEffect
+	ElseIf aiPrince == 6
+		Return 0x38639A ; MAG_AltarSanguineCultistEffect
+	ElseIf aiPrince == 7
+		Return 0x36CE24 ; MAG_AltarVaerminaCultistEffect
+	EndIf
+	Return 0
 EndFunction

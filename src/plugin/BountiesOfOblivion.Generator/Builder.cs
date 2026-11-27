@@ -90,6 +90,8 @@ internal sealed class Builder
         var gWormDeathGain = Global("BOO_WormDeathGain", 25);
         var gWormThreshold = Global("BOO_WormThreshold", 50);
         var questWorm = Id("BOO_WormHunt");
+        // 0.2.0: Wintersun / Pilgrim soft integration. Extra favor when the player worships the prince.
+        var gFaithBonus = Global("BOO_FaithBonus", 10);
 
         // --- Magic: ledger power, revel wine effect ---------------------------------------------
         var mgefLedger = Add(ScriptEffect("BOO_LedgerEffect", "Consult the Daedric Ledger",
@@ -341,6 +343,8 @@ internal sealed class Builder
             Vmad.Obj("BOO_WormDeathGain", gWormDeathGain), Vmad.Obj("BOO_WormThreshold", gWormThreshold),
             Vmad.Obj("WormHunt", questWorm), Vmad.Obj("BOO_WormBane", wormBane.FormKey),
             Vmad.Obj("BOO_MsgWormOffer", msgWormOffer), Vmad.Obj("BOO_MsgWormStatus", msgWormStatus),
+            // 0.2.0: Wintersun / Pilgrim
+            Vmad.Obj("BOO_FaithBonus", gFaithBonus),
             // One real line feed. Papyrus string literals cannot hold one and the build
             // compiler does not expand backslash escapes, so scripts take it from here.
             Vmad.Str("LineBreak", "\n")));

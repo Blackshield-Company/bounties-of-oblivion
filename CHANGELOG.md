@@ -14,6 +14,7 @@ Early beta, not yet playtested in game.
   - **Amulet of the Worm's Bane**: a one-time gift for the third thrall slain (Restoration +15%, vanilla silver necklace model, worn and on the ground).
   - *Favor of the princes* ends with the menace, its stage (Unnoticed, Watching, Hunting, Gnawing) and the number of thralls slain.
 - Console tunables `BOO_WormGain`, `BOO_WormDeathGain` and `BOO_WormThreshold`.
+- **Wintersun and Pilgrim compatibility**, thanks to ImmaculateDeception for the suggestion. If you follow a prince in Wintersun - Faiths of Skyrim, or carry that prince's shrine blessing from Pilgrim - A Religion Overhaul, each of their tasks gives `BOO_FaithBonus` (10) extra favor, and the payout box says why. Both are optional and looked up at runtime: no new masters, no SKSE, and nothing changes without them. Set `BOO_FaithBonus` to 0 to turn it off.
 
 ### Notes
 - Namira was already a full prince before 0.2.0. She was checked end to end and is unchanged, except that her tasks now feed the King of Worms.

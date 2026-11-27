@@ -122,6 +122,14 @@ Amulet:
 - [ ] Finish a fourth hunt: no second amulet. `show BOO_WormGiftGiven` is `1.00`.
 - [ ] Bypass: `player.additem FExxx859 1`.
 
+## 10. v0.2.0: Wintersun and Pilgrim (not yet run in game)
+
+- [ ] Without either mod: finish a task. The payout box has no worship line, and favor rises by 20 as before.
+- [ ] Wintersun: follow Boethiah (`coc WSN_AltarsCell`, use her shrine), then finish a Boethiah task. The payout box says "Your worship pleases Boethiah (Wintersun): +10 favor", and favor rises by 30. A Dagon task gives no bonus.
+- [ ] Pilgrim: pray at a Shrine of Namira (Reachcliff Cave), then finish a Namira task while the blessing lasts. The box says "(Pilgrim)".
+- [ ] At 100 menace, the order is halve then bonus: 20 / 2 + 10 = 20.
+- [ ] `set BOO_FaithBonus to 0`: no bonus and no line.
+
 ## Stuck? Reset commands
 ```
 stopquest BOO_ContractDagon      (or any BOO_Contract<Prince>)
