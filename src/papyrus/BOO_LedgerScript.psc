@@ -1,7 +1,8 @@
 Scriptname BOO_LedgerScript extends Quest
 {Daedric Ledger: Bounties of Oblivion - main controller. Delivers the Ledger,
 runs its menus, dispatches contracts, pays out, and tracks favor, rivalries,
-blessings and boons for the eight princes.}
+blessings and boons for the eight princes. Since 0.2.0 it also runs the King of
+Worms: an antagonist (not a prince) whose menace grows with every task done.}
 
 ; ---------------------------------------------------------------------------
 ; Properties (filled by the plugin generator, see src/plugin)
@@ -37,6 +38,23 @@ Message Property BOO_MsgPrinceMenu Auto
 Message Property BOO_MsgNoContract Auto
 Message Property BOO_MsgContractStatus Auto
 
+; 0.2.0: the King of Worms (Mannimarco). Not a prince: no favor, blessing or boon
+; tracks, and never part of the 8-long arrays above. All of his state lives in
+; globals, because OnInit does not run again on a save that predates 0.2.0.
+GlobalVariable Property BOO_WormMenace Auto
+{0 to 100. Grows with every prince task, reset by slaying a thrall.}
+GlobalVariable Property BOO_WormSlain Auto
+GlobalVariable Property BOO_WormGiftGiven Auto
+GlobalVariable Property BOO_WormGain Auto
+GlobalVariable Property BOO_WormDeathGain Auto
+{Menace gained instead of BOO_WormGain for Namira and Molag Bal tasks.}
+GlobalVariable Property BOO_WormThreshold Auto
+Quest Property WormHunt Auto
+{The thrall hunt (BOO_WormHunt). Runs BOO_ContractScript with Prince == WORM.}
+Armor Property BOO_WormBane Auto
+Message Property BOO_MsgWormOffer Auto
+Message Property BOO_MsgWormStatus Auto
+
 ; A single real line-feed character (0x0A), filled by the plugin generator.
 ; Papyrus string literals cannot hold one, and the build compiler does not expand
 ; backslash escapes (the text would print a literal backslash and letter), so the
@@ -52,6 +70,10 @@ Int Property BLESSING_FAVOR = 30 AutoReadOnly
 Int Property BOON_FAVOR = 80 AutoReadOnly
 Int Property MAX_FAVOR = 100 AutoReadOnly
 Int Property AbandonPenalty = 10 AutoReadOnly
+; Prince value of the worm hunt. Never an index into Favor/Contracts/Blessings/Boons/OfferMessages.
+Int Property WORM = 8 AutoReadOnly
+Int Property MAX_MENACE = 100 AutoReadOnly
+Int Property WORM_GIFT_SLAIN = 3 AutoReadOnly
 
 Bool ledgerDelivered = False
 Float eligibleSince = -1.0
@@ -183,6 +205,8 @@ Function OpenLedger()
 		ElseIf choice == 2
 			Debug.MessageBox(StandingsText())
 			keepOpen = False
+		ElseIf choice == 3
+			keepOpen = !WormMenu()
 		Else
 			keepOpen = False
 		EndIf
@@ -206,10 +230,14 @@ Bool Function PrinceMenu()
 EndFunction
 
 Bool Function TakeContract(Int aiPrince)
-	If ActiveContract() != None
+	Return StartTask(Contracts[aiPrince])
+EndFunction
+
+; Starts a task quest (a prince's contract or the worm hunt). One task at a time.
+Bool Function StartTask(Quest q)
+	If q == None || ActiveContract() != None
 		Return False
 	EndIf
-	Quest q = Contracts[aiPrince]
 	If q.IsRunning()
 		q.Stop()
 	EndIf
@@ -235,6 +263,9 @@ Bool Function ContractStatusMenu()
 		BOO_ContractActive.SetValueInt(0)
 		Return True
 	EndIf
+	If active.Prince == WORM
+		Return WormStatusMenu(active)
+	EndIf
 	If BOO_MsgContractStatus.Show() == 1
 		Int prince = active.Prince
 		active.Abandon()
@@ -254,6 +285,10 @@ BOO_ContractScript Function ActiveContract()
 		EndIf
 		i += 1
 	EndWhile
+	; The worm hunt counts as a task too, but is kept out of the 8-long Contracts array.
+	If WormHunt && WormHunt.IsRunning()
+		Return WormHunt as BOO_ContractScript
+	EndIf
 	Return None
 EndFunction
 
@@ -279,9 +314,21 @@ EndFunction
 
 ; Called by BOO_ContractScript when a contract is fulfilled.
 Function ContractCompleted(Int aiPrince)
+	If aiPrince == WORM
+		WormSlain()
+		Return
+	EndIf
+	If aiPrince < 0 || aiPrince >= PRINCE_COUNT
+		Return
+	EndIf
 	Actor player = Game.GetPlayer()
-	Int pay = Math.Floor((150.0 + 10.0 * player.GetLevel()) * BOO_PayMult.GetValue())
+	Int pay = TaskPay()
 	Int gain = BOO_FavorGain.GetValueInt()
+	; The King of Worms at full menace gnaws at every page: favor gains are halved.
+	Bool gnawed = Menace() >= MAX_MENACE
+	If gnawed
+		gain = gain / 2
+	EndIf
 	Int loss = BOO_RivalLoss.GetValueInt()
 	Int rival = RivalOf(aiPrince)
 
@@ -306,10 +353,30 @@ Function ContractCompleted(Int aiPrince)
 	Else
 		text += PrinceName(rival) + " has nothing left to take from you."
 	EndIf
+	If gnawed
+		text += Br(2) + "The King of Worms gnawed the page. Favor gained is halved."
+	EndIf
+
+	; Every task feeds the King of Worms; Namira's and Molag Bal's trade in the dead feeds him more.
+	Int menaceBefore = Menace()
+	Int menaceAfter = AddMenace(MenaceGainFor(aiPrince))
+	If WormTier(menaceAfter) != WormTier(menaceBefore)
+		text += Br(2) + "The King of Worms: " + WormTierName(menaceAfter) + " (menace " + menaceAfter + "/" + MAX_MENACE + ")"
+	EndIf
 	Debug.MessageBox(text)
+
+	Int threshold = WormThreshold()
+	If menaceBefore < threshold && menaceAfter >= threshold
+		Debug.MessageBox("A page of the Ledger has been eaten through. Something wrote in the holes." + Br(2) + "Mannimarco, the King of Worms, has noticed your dealings with the dead, and he has sent a thrall to collect." + Br(2) + "Open the Ledger to hunt it.")
+	EndIf
 
 	ApplyTiers(aiPrince)
 	ApplyTiers(rival)
+EndFunction
+
+; Gold for a finished task (prince contract or worm hunt).
+Int Function TaskPay()
+	Return Math.Floor((150.0 + 10.0 * Game.GetPlayer().GetLevel()) * BOO_PayMult.GetValue())
 EndFunction
 
 Function ModFavor(Int aiPrince, Int aiAmount)
@@ -439,6 +506,136 @@ String Function TierName(Int aiFavor)
 	Return "Unknown"
 EndFunction
 
+; ---------------------------------------------------------------------------
+; The King of Worms (0.2.0)
+; ---------------------------------------------------------------------------
+
+Int Function Menace()
+	If BOO_WormMenace == None
+		Return 0
+	EndIf
+	Return BOO_WormMenace.GetValueInt()
+EndFunction
+
+Int Function WormThreshold()
+	If BOO_WormThreshold == None
+		Return 50
+	EndIf
+	Return BOO_WormThreshold.GetValueInt()
+EndFunction
+
+Int Function MenaceGainFor(Int aiPrince)
+	If aiPrince == 2 || aiPrince == 3
+		If BOO_WormDeathGain == None
+			Return 25
+		EndIf
+		Return BOO_WormDeathGain.GetValueInt()
+	EndIf
+	If BOO_WormGain == None
+		Return 15
+	EndIf
+	Return BOO_WormGain.GetValueInt()
+EndFunction
+
+; Adds to the menace, clamped to 0..MAX_MENACE. Returns the new value.
+Int Function AddMenace(Int aiAmount)
+	If BOO_WormMenace == None
+		Return 0
+	EndIf
+	Int value = BOO_WormMenace.GetValueInt() + aiAmount
+	If value < 0
+		value = 0
+	ElseIf value > MAX_MENACE
+		value = MAX_MENACE
+	EndIf
+	BOO_WormMenace.SetValueInt(value)
+	Return value
+EndFunction
+
+; 0 Unnoticed, 1 Watching, 2 Hunting, 3 Gnawing.
+Int Function WormTier(Int aiMenace)
+	If aiMenace >= MAX_MENACE
+		Return 3
+	ElseIf aiMenace >= WormThreshold()
+		Return 2
+	ElseIf aiMenace >= 1
+		Return 1
+	EndIf
+	Return 0
+EndFunction
+
+String Function WormTierName(Int aiMenace)
+	Int tier = WormTier(aiMenace)
+	If tier == 3
+		Return "Gnawing"
+	ElseIf tier == 2
+		Return "Hunting"
+	ElseIf tier == 1
+		Return "Watching"
+	EndIf
+	Return "Unnoticed"
+EndFunction
+
+; Main menu button "The King of Worms". Returns True if the hunt was taken (closes the ledger).
+Bool Function WormMenu()
+	If BOO_WormMenace == None || WormHunt == None || BOO_MsgWormOffer == None
+		Return False
+	EndIf
+	If Menace() < WormThreshold()
+		Return False
+	EndIf
+	If BOO_MsgWormOffer.Show(BOO_WormMenace.GetValue()) == 0
+		Return StartTask(WormHunt)
+	EndIf
+	Return False
+EndFunction
+
+; Returns True to keep the ledger open.
+Bool Function WormStatusMenu(BOO_ContractScript akHunt)
+	If BOO_MsgWormStatus.Show() == 1
+		; No favor penalty and the menace stays where it is.
+		akHunt.Abandon()
+		BOO_ContractActive.SetValueInt(0)
+		Debug.Notification("The King of Worms laughs from the dark.")
+		Return True
+	EndIf
+	Return False
+EndFunction
+
+; Called (through ContractCompleted) when the worm hunt's thrall dies. No prince favor changes.
+Function WormSlain()
+	Actor player = Game.GetPlayer()
+	Int pay = TaskPay()
+	If pay > 0
+		player.AddItem(Gold001, pay, True)
+	EndIf
+	BOO_ContractActive.SetValueInt(0)
+	If BOO_WormMenace
+		BOO_WormMenace.SetValueInt(0)
+	EndIf
+	Int slain = 0
+	If BOO_WormSlain
+		BOO_WormSlain.Mod(1)
+		slain = BOO_WormSlain.GetValueInt()
+	EndIf
+
+	String text = "The thrall of the King of Worms is dead." + Br(2)
+	text += pay + " gold." + Br()
+	text += "The worm-eaten page crumbles to dust. Menace: 0/" + MAX_MENACE + Br()
+	text += "Thralls slain: " + slain + Br(2)
+	text += "Arkay's priests would thank you, if they knew."
+	Debug.MessageBox(text)
+
+	If BOO_WormGiftGiven == None || BOO_WormBane == None
+		Return
+	EndIf
+	If slain >= WORM_GIFT_SLAIN && BOO_WormGiftGiven.GetValueInt() == 0
+		BOO_WormGiftGiven.SetValueInt(1)
+		player.AddItem(BOO_WormBane, 1, True)
+		Debug.MessageBox("Three of his thralls lie dead. Where the last one fell, among the worms, lies a silver necklace that was not there before." + Br(2) + "You receive the Amulet of the Worm's Bane (Restoration +15%).")
+	EndIf
+EndFunction
+
 String Function StandingsText()
 	String text = "FAVOR OF THE PRINCES" + Br()
 	Int i = 0
@@ -448,5 +645,9 @@ String Function StandingsText()
 		i += 1
 	EndWhile
 	text += Br(2) + "Blessing at " + BLESSING_FAVOR + ". Gift at " + BOON_FAVOR + ". Contracts fulfilled: " + BOO_ContractsDone.GetValueInt()
+	If BOO_WormMenace && BOO_WormSlain
+		Int menace = Menace()
+		text += Br(2) + "The King of Worms: menace " + menace + "/" + MAX_MENACE + " (" + WormTierName(menace) + "). Thralls slain: " + BOO_WormSlain.GetValueInt() + "."
+	EndIf
 	Return text
 EndFunction

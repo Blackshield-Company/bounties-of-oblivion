@@ -20,6 +20,10 @@ internal sealed class Builder
 
     private const int TypeKill = 0, TypeClear = 1, TypeFetch = 2, TypeRevel = 3;
 
+    // The King of Worms' hunt runs on BOO_ContractScript with this Prince value (must match
+    // BOO_LedgerScript.WORM). It is never used to index the 8-long prince arrays.
+    private const int Worm = 8;
+
     // Alias layout shared by every contract quest
     private const uint AliasLocation = 0, AliasMapMarker = 1, AliasTarget = 2, AliasRelic = 3;
 
@@ -78,6 +82,14 @@ internal sealed class Builder
         var gRivalLoss = Global("BOO_RivalLoss", 10);
         var gRevelCount = Global("BOO_RevelCount", 0);
         var gFavor = PrinceSpecs.Select(p => Global($"BOO_Favor{p.Text.Key}", 0)).ToArray();
+        // 0.2.0: the King of Worms. New state lives in new globals (OnInit does not rerun on old saves).
+        var gWormMenace = Global("BOO_WormMenace", 0);
+        var gWormSlain = Global("BOO_WormSlain", 0);
+        var gWormGiftGiven = Global("BOO_WormGiftGiven", 0);
+        var gWormGain = Global("BOO_WormGain", 15);
+        var gWormDeathGain = Global("BOO_WormDeathGain", 25);
+        var gWormThreshold = Global("BOO_WormThreshold", 50);
+        var questWorm = Id("BOO_WormHunt");
 
         // --- Magic: ledger power, revel wine effect ---------------------------------------------
         var mgefLedger = Add(ScriptEffect("BOO_LedgerEffect", "Consult the Daedric Ledger",
@@ -156,6 +168,43 @@ internal sealed class Builder
             });
         }).ToArray();
 
+        // The King of Worms' bane: a one-time gift for the third thrall slain (not a prince boon).
+        var enchWormBane = Add(new ObjectEffect(Id("BOO_EnchWormBane"), R)
+        {
+            EditorID = "BOO_EnchWormBane",
+            Name = Texts.WormBaneName,
+            CastType = CastType.ConstantEffect,
+            TargetType = TargetType.Self,
+            EnchantType = ObjectEffect.EnchantTypeEnum.Enchantment,
+            Flags = ObjectEffect.Flag.NoAutoCalc,
+            Effects = { Effect(EnchFortifyRestorationConstantSelf, 15, 0) },
+        });
+        var wormBane = Add(new Armor(Id("BOO_WormBane"), R)
+        {
+            EditorID = "BOO_WormBane",
+            Name = Texts.WormBaneName,
+            ObjectBounds = Bounds(-3, -9, 0, 3, 9, 1),
+            ObjectEffect = L<IObjectEffectGetter>(enchWormBane.FormKey).AsNullable(),
+            // Worn and ground/inventory: the vanilla silver necklace, so both models match.
+            WorldModel = new GenderedItem<ArmorModel?>(new ArmorModel { Model = new Model { File = MeshAmuletSilver } }, null),
+            BodyTemplate = new BodyTemplate
+            {
+                FirstPersonFlags = BipedObjectFlag.Amulet,
+                ArmorType = ArmorType.Clothing,
+                ActsLike44 = true,
+            },
+            Race = L<IRaceGetter>(DefaultRace).AsNullable(),
+            Keywords = new()
+            {
+                L<IKeywordGetter>(ArmorJewelry), L<IKeywordGetter>(VendorItemJewelry), L<IKeywordGetter>(JewelryExpensive),
+                L<IKeywordGetter>(ClothingNecklace), L<IKeywordGetter>(MagicDisallowEnchanting),
+            },
+            Description = "",
+            Armature = { L<IArmorAddonGetter>(SilverAmuletAA) },
+            Value = 800,
+            Weight = 0.25f,
+        });
+
         // --- Items: the ledger, relics, revel wine --------------------------------------------
         var ledger = Add(new Book(Id("BOO_Ledger"), R)
         {
@@ -228,6 +277,17 @@ internal sealed class Builder
         }.Select(t => Add(TemplatedNpc(t.edid, t.name, t.shortName, t.template, t.race, allButName))).ToList();
         var lvlQuarry = Add(LeveledList("BOO_LCharQuarry", quarry));
 
+        // The template flags in allButName override race, class and combat style (Traits/AIData),
+        // as with the champions' NordRace; they are kept as fallbacks only.
+        var thralls = new (string edid, string name, string shortName)[]
+        {
+            ("BOO_WormThrall01", "Thrall of the King of Worms", "Thrall"),
+            ("BOO_WormThrall02", "Worm Acolyte", "Acolyte"),
+            ("BOO_WormThrall03", "Hand of Mannimarco", "Hand"),
+        }.Select(t => Add(TemplatedNpc(t.edid, t.name, t.shortName, LCharWarlockBossNecro, BretonRace, allButName,
+            ClassMageNecro, CsHumanMagic))).ToList();
+        var lvlThrall = Add(LeveledList("BOO_LCharWormThrall", thralls));
+
         // --- Messages --------------------------------------------------------------------------
         var msgArrival = Msg("BOO_MsgArrival", Texts.Arrival);
         var msgBind = Msg("BOO_MsgBindOffer", Texts.BindOffer, Btn("Sign in blood"), Btn("Not now"), Btn("Cast the Ledger away for good"));
@@ -237,12 +297,17 @@ internal sealed class Builder
             Btn("Seek a task", Cond.Global(gActive, CompareOperator.EqualTo, 0)),
             Btn("Current task", Cond.Global(gActive, CompareOperator.EqualTo, 1)),
             Btn("Favor of the princes"),
+            // 0.2.0: only once the menace reaches BOO_WormThreshold, and only with no task running.
+            Btn("The King of Worms", Cond.Global(gActive, CompareOperator.EqualTo, 0),
+                GlobalVsGlobal(gWormMenace, CompareOperator.GreaterThanOrEqualTo, gWormThreshold)),
             Btn("Close the Ledger"));
         var msgPrinces = Msg("BOO_MsgPrinceMenu", Texts.PrinceMenu,
             PrinceSpecs.Select(p => Btn(p.Text.Name)).Append(Btn("Back")).ToArray());
         var msgOffers = PrinceSpecs.Select(p => Msg($"BOO_MsgOffer{p.Text.Key}", p.Text.Offer, Btn("Accept"), Btn("Decline"))).ToArray();
         var msgNoContract = Msg("BOO_MsgNoContract", Texts.NoContract);
         var msgStatus = Msg("BOO_MsgContractStatus", Texts.Status, Btn("Close the Ledger"), Btn("Abandon the task (-10 favor)"));
+        var msgWormOffer = Msg("BOO_MsgWormOffer", Texts.WormOffer, Btn("Hunt the Worm Thrall"), Btn("Decline"));
+        var msgWormStatus = Msg("BOO_MsgWormStatus", Texts.WormStatus, Btn("Close the Ledger"), Btn("Abandon the hunt"));
 
         // --- Controller quest -----------------------------------------------------------------
         var ledgerQuest = Add(new Quest(questLedger, R)
@@ -270,6 +335,12 @@ internal sealed class Builder
             Vmad.Obj("BOO_MsgBound", msgBound), Vmad.Obj("BOO_MsgRefused", msgRefused),
             Vmad.Obj("BOO_MsgLedgerMenu", msgMain), Vmad.Obj("BOO_MsgPrinceMenu", msgPrinces),
             Vmad.Obj("BOO_MsgNoContract", msgNoContract), Vmad.Obj("BOO_MsgContractStatus", msgStatus),
+            // 0.2.0: the King of Worms
+            Vmad.Obj("BOO_WormMenace", gWormMenace), Vmad.Obj("BOO_WormSlain", gWormSlain),
+            Vmad.Obj("BOO_WormGiftGiven", gWormGiftGiven), Vmad.Obj("BOO_WormGain", gWormGain),
+            Vmad.Obj("BOO_WormDeathGain", gWormDeathGain), Vmad.Obj("BOO_WormThreshold", gWormThreshold),
+            Vmad.Obj("WormHunt", questWorm), Vmad.Obj("BOO_WormBane", wormBane.FormKey),
+            Vmad.Obj("BOO_MsgWormOffer", msgWormOffer), Vmad.Obj("BOO_MsgWormStatus", msgWormStatus),
             // One real line feed. Papyrus string literals cannot hold one and the build
             // compiler does not expand backslash escapes, so scripts take it from here.
             Vmad.Str("LineBreak", "\n")));
@@ -377,6 +448,24 @@ internal sealed class Builder
                 if (!props.Any(x => x.Name == optional))
                     ExpectedUnfilled.Add($"BOO_Contract{p.Key}:BOO_ContractScript.{optional}");
         }
+
+        // --- The King of Worms' hunt: a kill task on the shared contract script (Boethiah's pattern)
+        var wq = ContractQuest(questWorm, "BOO_WormHunt", Texts.WormQuestName, Texts.WormStartLog,
+            Texts.WormStageDone, Texts.WormStageAbandoned);
+        wq.Aliases.Add(LocationAlias(new[] { LocTypeDungeon }, RefTypeMapMarker, allowCleared: true));
+        wq.Aliases.Add(MapMarkerAlias(optional: false));
+        wq.Aliases.Add(CreatedAlias(lvlThrall.FormKey));
+        wq.NextAliasID = (uint)wq.Aliases.Count;
+        wq.Objectives.Add(Objective(10, Texts.WormObjective, (int)AliasTarget));
+        wq.VirtualMachineAdapter = Vmad.QuestAdapter(Vmad.Script("BOO_ContractScript",
+            Vmad.Obj("Ledger", questLedger),
+            Vmad.Int("Prince", Worm),
+            Vmad.Int("ContractType", TypeKill),
+            Vmad.Alias("ContractLocation", questWorm, (int)AliasLocation),
+            Vmad.Alias("MapMarker", questWorm, (int)AliasMapMarker),
+            Vmad.Alias("Target", questWorm, (int)AliasTarget)));
+        foreach (var optional in new[] { "Relic", "RelicItem", "BOO_RevelCount", "BOO_RevelWine" })
+            ExpectedUnfilled.Add($"BOO_WormHunt:BOO_ContractScript.{optional}");
     }
 
     // ----------------------------------------------------------------------------------------
@@ -430,6 +519,14 @@ internal sealed class Builder
         return b;
     }
 
+    /// <summary>GetGlobalValue <paramref name="global"/> compared against another global (a tunable).</summary>
+    private static ConditionGlobal GlobalVsGlobal(FormKey global, CompareOperator op, FormKey against)
+    {
+        var d = new GetGlobalValueConditionData();
+        d.Global.Link.SetTo(global);
+        return new ConditionGlobal { Data = d, CompareOperator = op, ComparisonValue = new FormLink<IGlobalGetter>(against) };
+    }
+
     private FormKey Msg(string edid, string text, params MessageButton[] buttons)
     {
         if (buttons.Length > 10) throw new InvalidOperationException($"{edid}: a message box holds at most 10 buttons");
@@ -445,7 +542,8 @@ internal sealed class Builder
         return m.FormKey;
     }
 
-    private Npc TemplatedNpc(string edid, string name, string shortName, FormKey template, FormKey race, NpcConfiguration.TemplateFlag flags) => new(Id(edid), R)
+    private Npc TemplatedNpc(string edid, string name, string shortName, FormKey template, FormKey race, NpcConfiguration.TemplateFlag flags,
+        FormKey? cls = null, FormKey? combatStyle = null) => new(Id(edid), R)
     {
         EditorID = edid,
         Name = name,
@@ -453,8 +551,8 @@ internal sealed class Builder
         ObjectBounds = Bounds(-22, -14, 0, 22, 14, 128),
         Template = new FormLinkNullable<INpcSpawnGetter>(template),
         Race = L<IRaceGetter>(race),
-        Class = L<IClassGetter>(ClassWarrior1H),
-        CombatStyle = L<ICombatStyleGetter>(CsHumanMelee).AsNullable(),
+        Class = L<IClassGetter>(cls ?? ClassWarrior1H),
+        CombatStyle = L<ICombatStyleGetter>(combatStyle ?? CsHumanMelee).AsNullable(),
         Configuration = new NpcConfiguration
         {
             Flags = NpcConfiguration.Flag.AutoCalcStats,
@@ -481,7 +579,8 @@ internal sealed class Builder
         }).ToExtendedList(),
     };
 
-    private Quest ContractQuest(FormKey fk, string edid, string name, string startLog)
+    private Quest ContractQuest(FormKey fk, string edid, string name, string startLog,
+        string doneLog = Texts.StageDone, string abandonedLog = Texts.StageAbandoned)
     {
         var q = Add(new Quest(fk, R)
         {
@@ -496,13 +595,13 @@ internal sealed class Builder
         q.Stages.Add(new QuestStage
         {
             Index = 100,
-            LogEntries = { new QuestLogEntry { Flags = QuestLogEntry.Flag.CompleteQuest, Entry = Texts.StageDone } },
+            LogEntries = { new QuestLogEntry { Flags = QuestLogEntry.Flag.CompleteQuest, Entry = doneLog } },
         });
         q.Stages.Add(new QuestStage
         {
             Index = 200,
             Flags = QuestStage.Flag.ShutDownStage,
-            LogEntries = { new QuestLogEntry { Flags = QuestLogEntry.Flag.FailQuest, Entry = Texts.StageAbandoned } },
+            LogEntries = { new QuestLogEntry { Flags = QuestLogEntry.Flag.FailQuest, Entry = abandonedLog } },
         });
         return q;
     }

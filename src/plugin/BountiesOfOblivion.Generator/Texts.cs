@@ -126,4 +126,20 @@ Open the Ledger, or call on it with the power it grants, and choose a seal. One 
 
     public const string StageDone = "The Ledger's page burned clean. The prince has paid.";
     public const string StageAbandoned = "I broke my word to the prince. The Ledger remembers.";
+
+    // --- The King of Worms (0.2.0): an antagonist, not a prince ------------------------------
+    public const string WormOffer =
+        "THE KING OF WORMS\n\nA page of the Ledger has been eaten through, and something has written in the holes.\n\nMannimarco, the King of Worms, the lich who would steal Arkay's dominion over death, has noticed the Ledger. Every corpse you leave for the princes feeds him. He has sent a thrall to collect.\n\nHunt it down before it collects you.\n\nMenace of the King of Worms: %.0f / 100";
+
+    public const string WormStatus =
+        "A thrall of the King of Worms is still abroad. Its trail is in your journal.\n\nYou can give up the hunt. The princes will not care, but the menace stays where it is.";
+
+    public const string WormQuestName = "Daedric Ledger: The King of Worms";
+    public const string WormStartLog =
+        "A worm-eaten page in the Daedric Ledger names a thrall of Mannimarco, the King of Worms: <Alias=Target>, waiting near <Alias=ContractLocation>. The dead belong to Arkay. I am to put this one back where it belongs.";
+    public const string WormObjective = "Slay <Alias=Target> near <Alias=ContractLocation>";
+    public const string WormStageDone = "The thrall is dead and the worm-eaten page has crumbled. Arkay's priests would thank me, if they knew.";
+    public const string WormStageAbandoned = "I gave up the hunt. The King of Worms is still watching the Ledger.";
+
+    public const string WormBaneName = "Amulet of the Worm's Bane";
 }
